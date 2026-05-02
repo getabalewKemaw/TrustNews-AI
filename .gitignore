@@ -156,9 +156,14 @@ Thumbs.db
 *.key
 *.crt
 
-# ML Services (if any large files or models)
-# Add specific ignores for ML models, datasets, etc. if needed
-# models/
-# data/
-# *.h5
-# *.pkl
+# ML service data and artifacts
+ml_services/data/raw/*
+!ml_services/data/raw/.gitkeep
+ml_services/data/processed/*
+!ml_services/data/processed/.gitkeep
+ml_services/artifacts/*
+!ml_services/artifacts/.gitkeep
+*.h5
+*.pkl
+*.joblib
+.ipynb_checkpoints/
