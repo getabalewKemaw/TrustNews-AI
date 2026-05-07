@@ -167,3 +167,10 @@ ml_services/artifacts/*
 *.pkl
 *.joblib
 .ipynb_checkpoints/
+
+# ML service virtual environments
+ml_services/.venv/
+ml_services/venv/
+
+# ML service generated charts
+ml_services/scripts/*.png
