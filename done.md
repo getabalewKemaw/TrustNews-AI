@@ -39,28 +39,41 @@ Created a proper ML workspace:
 
 ```text
 ml_services/
+  scripts/         Python scripts
+    explore_dataset.py
+    prepare_dataset.py
+  src/             Reusable Python modules
+    trustnews_ml/
+      __init__.py
+      preprocessing.py
   artifacts/
   data/
     raw/
     processed/
-  notebooks/
   README.md
   requirements.txt
 ```
 
-### Jupyter notebooks
+### Python Scripts
 
-Created:
+Created Python scripts for the ML workflow:
 
+**Runnable scripts (in `scripts/`):**
 ```text
-ml_services/notebooks/01_dataset_exploration.ipynb
-ml_services/notebooks/02_prepare_dataset.ipynb
+ml_services/scripts/explore_dataset.py
+ml_services/scripts/prepare_dataset.py
+```
+
+**Reusable modules (in `src/`):**
+```text
+ml_services/src/trustnews_ml/preprocessing.py
+ml_services/src/trustnews_ml/__init__.py
 ```
 
 Purpose:
-
-- `01_dataset_exploration.ipynb` is for understanding the Kaggle dataset.
-- `02_prepare_dataset.ipynb` is for cleaning the raw dataset and saving a clean CSV.
+- `explore_dataset.py` - Understand the Kaggle dataset (includes visualization)
+- `prepare_dataset.py` - Clean and save `news_clean.csv`
+- `preprocessing.py` - Reusable text cleaning functions
 
 The expected raw files are:
 
@@ -110,29 +123,17 @@ It now ignores:
 
 This keeps large or generated ML files out of Git.
 
-## Important Correction
+## Workflow Change
 
-The first version had ML helper code in `.py` files:
+Switched from Jupyter notebooks to Python scripts for easier execution.
 
-```text
-ml_services/scripts/prepare_dataset.py
-ml_services/src/trustnews_ml/preprocessing.py
-```
-
-Because the user requested notebook-based ML work, those files were removed and
-the logic was moved into:
-
-```text
-ml_services/notebooks/02_prepare_dataset.ipynb
-```
-
-FastAPI backend files will still use `.py` later because APIs need Python
-modules to run. But dataset exploration, cleaning, and first model training will
-use notebooks for now.
+Old notebook workflow → New Python script workflow:
+- `notebooks/01_dataset_exploration.ipynb` → `scripts/explore_dataset.py`
+- `notebooks/02_prepare_dataset.ipynb` → `scripts/prepare_dataset.py`
 
 ## Next Step
 
-Next, download the Kaggle Fake and Real News Dataset and place:
+1. Download the Kaggle Fake and Real News Dataset and place:
 
 ```text
 True.csv
@@ -145,21 +146,14 @@ inside:
 ml_services/data/raw/
 ```
 
-Then open Jupyter from `ml_services/`:
+2. Setup and run the Python scripts:
 
 ```powershell
 cd ml_services
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python -m ipykernel install --user --name trustnews-ml --display-name "Python (TrustNewsAI ML)"
-jupyter notebook
-```
-
-Run the notebooks in this order:
-
-```text
-01_dataset_exploration.ipynb
-02_prepare_dataset.ipynb
+python scripts/explore_dataset.py
+python scripts/prepare_dataset.py
 ```
 

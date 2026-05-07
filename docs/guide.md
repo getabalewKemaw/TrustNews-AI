@@ -38,12 +38,13 @@ Browser
 Day 1:
 - Confirm folder structure.
 - Add ML service requirements.
-- Add dataset loading and cleaning notebooks.
+- Add dataset loading and cleaning Python scripts.
 
 Day 2:
 - Download the Kaggle Fake and Real News Dataset.
 - Place raw CSV files in `ml_services/data/raw/`.
-- Run the exploration and cleaning notebooks.
+- Run the exploration script (includes visualization).
+- Run the preparation script to create clean dataset.
 
 Day 3:
 - Inspect processed data.
@@ -121,11 +122,11 @@ Processed dataset output:
 ml_services/data/processed/news_clean.csv
 ```
 
-Notebook workflow:
+Python script workflow:
 
 ```text
-ml_services/notebooks/01_dataset_exploration.ipynb
-ml_services/notebooks/02_prepare_dataset.ipynb
+ml_services/scripts/explore_dataset.py
+ml_services/scripts/prepare_dataset.py
 ```
 
 Required processed columns:

@@ -18,10 +18,7 @@ Create and activate a virtual environment from inside `ml_services/`:
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python -m ipykernel install --user --name trustnews-ml --display-name "Python (TrustNewsAI ML)"
 ```
-
-When opening notebooks, select the `Python (TrustNewsAI ML)` kernel.
 
 ## Dataset
 
@@ -33,43 +30,57 @@ ml_services/data/raw/True.csv
 ml_services/data/raw/Fake.csv
 ```
 
-The cleaning script also supports a single CSV if it has a label column and text
-columns.
+## Python Script Workflow
 
-## Clean The Data In Jupyter
+Run the scripts in order:
 
-Start Jupyter from inside `ml_services/`:
+### 1. Explore the dataset
 
 ```powershell
-jupyter notebook
+python scripts/explore_dataset.py
 ```
 
-Open and run:
+This shows:
+- Data shape and columns
+- Label distribution
+- Missing values
+- Duplicate count
+- Content statistics
+- Creates visualization chart (`label_distribution.png`)
+
+### 2. Prepare the clean dataset
+
+```powershell
+python scripts/prepare_dataset.py
+```
+
+This creates:
+- `ml_services/data/processed/news_clean.csv`
+
+## Cleaning Process
+- Removes URLs and emails
+- Normalizes whitespace
+- Combines title and text into content
+- Drops rows with missing/short content
+- Removes duplicates
+- Shuffles the data
+
+## Project Structure
 
 ```text
-notebooks/01_dataset_exploration.ipynb
-notebooks/02_prepare_dataset.ipynb
+ml_services/
+  scripts/           Runnable Python scripts
+    explore_dataset.py
+    prepare_dataset.py
+  src/               Reusable Python modules
+    trustnews_ml/
+      __init__.py
+      preprocessing.py
+  data/
+    raw/             Raw dataset files (not in Git)
+    processed/       Cleaned dataset (not in Git)
+  artifacts/         Trained models (not in Git)
 ```
-
-Output:
-
-```text
-ml_services/data/processed/news_clean.csv
-```
-
-## Notebook Workflow
-
-Use notebooks for learning, exploration, charts, cleaning, and first model
-training.
-
-Recommended order:
-
-1. `notebooks/01_dataset_exploration.ipynb`
-2. `notebooks/02_prepare_dataset.ipynb`
-3. future training notebook
-
-Later, when we build the API service, FastAPI will still need normal `.py`
-files. For now, the ML learning and dataset work stays in notebooks.
 
 ## Current Data Contract
 
