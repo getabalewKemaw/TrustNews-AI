@@ -41,15 +41,12 @@ def check_files_exist():
     
     print(f"True.csv exists: {true_exists}")
     print(f"Fake.csv exists: {fake_exists}")
-    # .venv\Scripts\python.exe notebooks/01_dataset_exploration.py
+    
     if not true_exists or not fake_exists:
         print("\nERROR: Missing dataset files!")
         print(f"Expected: {TRUE_PATH}")
         print(f"Expected: {FAKE_PATH}")
-        print("\nDownload from:")
-        print("https://www.kaggle.com/datasets/clmentbischoff/fake-and-real-news-dataset")
         return False
-    
     return True
 
 
@@ -65,18 +62,17 @@ def load_and_label_data():
     print("=" * 60)
     
     # Load the real news dataset
-    print(f"Loading {TRUE_PATH}...")
     real_df = pd.read_csv(TRUE_PATH)
-    
-    # Load the fake news dataset
-    print(f"Loading {FAKE_PATH}...")
     fake_df = pd.read_csv(FAKE_PATH)
     
     # Add labels to distinguish real from fake
+    # becuase the model learn from lables
     real_df['label'] = 'REAL'
     fake_df['label'] = 'FAKE'
     
+
     # Combine both datasets into one
+    # why not train separetlly ? b/c classification models expect x,y=all inputs,and all outputs respectivelly plus to  shuffle the data
     raw_df = pd.concat([real_df, fake_df], ignore_index=True)
     
     print(f"\nTotal records loaded: {len(raw_df)}")
@@ -99,6 +95,7 @@ def display_basic_info(df):
     print("\n--- Label Distribution ---")
     print(df['label'].value_counts())
     print(f"\nPercentages:")
+    # show the percentage using the normalize =True methods
     print(df['label'].value_counts(normalize=True) * 100)
 
 
@@ -115,6 +112,7 @@ def check_data_quality(df):
     print(f"\nTotal missing: {missing.sum()}")
     
     # Check for duplicate articles (same title and text)
+    # The model may memorize instead of learning real patterns if the data we give hs duplicates
     print("\n--- Duplicates ---")
     duplicates = df.duplicated(subset=['title', 'text']).sum()
     print(f"Duplicate articles (title + text): {duplicates}")
@@ -134,7 +132,7 @@ def analyze_content_length(df):
     
     # Show statistics grouped by label
     print("\n--- Content Length by Label ---")
-    stats = df.groupby('label')['content_length'].describe()
+    stats = df.groupby('label')['content_length'].describe()# these gives the summary statics like the metrics like count mean std min
     print(stats)
     
     # Show very short articles (potential quality issues)
@@ -142,6 +140,54 @@ def analyze_content_length(df):
     print(f"\n--- Very Short Articles (< 100 chars): {len(short_articles)} ---")
     if len(short_articles) > 0:
         print(short_articles[['title', 'content_length', 'label']].head())
+
+
+
+"""Are there articles whose length is unusually too small or too large compared to the rest?"""
+def detect_outliers(df):
+    """Detect outliers in content length using IQR method."""
+    print("\n" + "=" * 60)
+    print("OUTLIER DETECTION")
+    print("=" * 60)
+    
+    # Calculate content length if not already done
+    if 'content_length' not in df.columns:
+        df['content'] = df['title'].fillna('') + ' ' + df['text'].fillna('')
+        df['content_length'] = df['content'].str.len()
+    
+    # Calculate IQR for content length
+    Q1 = df['content_length'].quantile(0.25)
+    Q3 = df['content_length'].quantile(0.75)
+    IQR = Q3 - Q1 # interquartile range measures the normal spread of data
+    
+    # Define outlier bounds (<0 and >150)
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    print(f"\nContent Length Statistics:")
+    print(f"  Q1 (25th percentile): {Q1:.0f}")
+    print(f"  Q3 (75th percentile): {Q3:.0f}")
+    print(f"  IQR: {IQR:.0f}")
+    print(f"  Lower bound (outlier): {lower_bound:.0f}")
+    print(f"  Upper bound (outlier): {upper_bound:.0f}")
+    
+    # Identify outliers -select rows that are too short or too long
+    outliers = df[(df['content_length'] < lower_bound) | (df['content_length'] > upper_bound)]
+    print(f"\n--- Outliers Detected: {len(outliers)} ({len(outliers)/len(df)*100:.1f}%) ---")
+    
+    if len(outliers) > 0:
+        print(f"  Short outliers (< {lower_bound:.0f}): {len(outliers[outliers['content_length'] < lower_bound])}")
+        print(f"  Long outliers (> {upper_bound:.0f}): {len(outliers[outliers['content_length'] > upper_bound])}")
+        
+        # Show sample outliers
+        print("\n--- Sample Outliers ---")
+        print(outliers[['title', 'content_length', 'label']].head())
+        
+        # Check if outliers are balanced by label
+        print("\n--- Outlier Distribution by Label ---")
+        print(outliers['label'].value_counts())
+    
+    return len(outliers)
 
 
 def plot_label_distribution(df):
@@ -203,13 +249,16 @@ def main():
     # Step 5: Analyze content lengths
     analyze_content_length(df)
     
-    # Step 6: Create visualization
+    # Step 6: Detect outliers
+    outlier_count = detect_outliers(df)
+    
+    # Step 7: Create visualization
     try:
         plot_label_distribution(df)
     except Exception as e:
         print(f"\nCould not create plot: {e}")
     
-    # Step 7: Show sample records
+    # Step 8: Show sample records
     show_samples(df)
     
     # Final summary
@@ -217,7 +266,8 @@ def main():
     print("EXPLORATION COMPLETE")
     print("=" * 60)
     print(f"\nTotal records: {len(df)}")
-    print(f"Next step: Run prepare_dataset.py to clean the data")
+    print(f"Outliers detected: {outlier_count}")
+    print(f"Next step: Run prepare_dataset.py to clean and split the data")
 
 
 if __name__ == '__main__':
