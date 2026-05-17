@@ -46,6 +46,7 @@ This shows:
 - Missing values
 - Duplicate count
 - Content statistics
+- Outlier detection
 - Creates visualization chart (`label_distribution.png`)
 
 ### 2. Prepare the clean dataset
@@ -55,7 +56,28 @@ python scripts/prepare_dataset.py
 ```
 
 This creates:
-- `ml_services/data/processed/news_clean.csv`
+- `ml_services/data/processed/train.csv` (80% of data)
+- `ml_services/data/processed/test.csv` (20% of data)
+- `ml_services/data/processed/news_clean.csv` (full cleaned dataset)
+
+### 3. Train the model
+
+```powershell
+python scripts/train_model.py
+```
+
+This trains a Logistic Regression model with:
+- TF-IDF feature extraction (10,000 features, unigrams + bigrams)
+- Class weights to handle imbalance
+- Saves to `ml_services/artifacts/fake_news_pipeline.joblib`
+
+### 4. Predict on new articles
+
+```powershell
+python scripts/predict.py
+```
+
+Interactive script to predict if an article is FAKE or REAL.
 
 ## Cleaning Process
 - Removes URLs and emails
@@ -64,6 +86,7 @@ This creates:
 - Drops rows with missing/short content
 - Removes duplicates
 - Shuffles the data
+- Splits into train/test sets with stratification
 
 ## Project Structure
 
@@ -72,6 +95,8 @@ ml_services/
   scripts/           Runnable Python scripts
     explore_dataset.py
     prepare_dataset.py
+    train_model.py
+    predict.py
   src/               Reusable Python modules
     trustnews_ml/
       __init__.py
