@@ -73,11 +73,20 @@ This trains a Logistic Regression model with:
 
 ### 4. Predict on new articles
 
+**Option A: Command-line interface**
 ```powershell
 python scripts/predict.py
 ```
 
-Interactive script to predict if an article is FAKE or REAL.
+**Option B: Web interface (Gradio)**
+```powershell
+python scripts/gradio_app.py
+```
+
+This launches a web UI at http://127.0.0.1:7860 where you can:
+- Enter article title and text
+- Get instant predictions with confidence scores
+- Use example articles for testing
 
 ## Cleaning Process
 - Removes URLs and emails
@@ -97,6 +106,7 @@ ml_services/
     prepare_dataset.py
     train_model.py
     predict.py
+    gradio_app.py
   src/               Reusable Python modules
     trustnews_ml/
       __init__.py
