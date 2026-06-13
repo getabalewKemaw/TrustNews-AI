@@ -124,9 +124,8 @@ The training script prints precision/recall/F1 and saves the pipeline to `ml_ser
 
 ## For  — concise candidate summary
 - **Role demonstrated:** ML Engineer / NLP Engineer
-- **Responsibilities to highlight in interview:** dataset cleaning, feature engineering, baseline model selection, evaluation and simple deployment
-- **Talking points:** why TF‑IDF + Logistic Regression is a good baseline, how you handled duplicates and imbalance, what improvements you would explore (transformers, ensembling, data augmentation)
-- **How to verify:** run the Gradio demo and show inference examples; inspect metrics printed by `train_model.py` and open `ml_services/DATA_QUALITY_REPORT.md` for dataset QC notes
+- **Responsibilities :** dataset cleaning, feature engineering, baseline model selection, evaluation and simple deployment
+
 
 ## Contributing & contact
 If you'd like to contribute or see enhancements, please open an issue or PR. Replace the contact placeholder below with your GitHub profile or email before pushing.
