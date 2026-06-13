@@ -4,12 +4,6 @@ TrustNewsAI Dataset Exploration
 
 Goal: understand the Kaggle Fake and Real News Dataset before training any model.
 
-Expected raw files:
-    - ../data/raw/True.csv
-    - ../data/raw/Fake.csv
-
-Run this script from the ml_services directory:
-    python notebooks/01_dataset_exploration.py
 """
 
 from pathlib import Path

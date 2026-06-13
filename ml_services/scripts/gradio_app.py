@@ -1,5 +1,4 @@
 """Gradio interface for fake news detection.
-
 This provides a simple web UI to use the trained model for predictions.
 """
 
@@ -129,7 +128,5 @@ def main():
     
     # Launch the app
     app.launch(share=False, server_name="127.0.0.1", server_port=7860)
-
-
 if __name__ == '__main__':
     main()

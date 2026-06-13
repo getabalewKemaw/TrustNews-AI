@@ -1,5 +1,4 @@
 """Text preprocessing utilities for TrustNewsAI."""
-
 import re
 from html import unescape
 
@@ -20,8 +19,6 @@ def clean_text(value: str | None) -> str:
     text = text.replace('\x00', ' ')
     text = WHITESPACE_RE.sub(' ', text)
     return text.strip()
-
-
 def build_content(title: str, body: str) -> str:
     """Combine title and body into a single clean content string."""
     return f'{clean_text(title)} {clean_text(body)}'.strip()

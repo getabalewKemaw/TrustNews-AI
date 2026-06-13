@@ -12,7 +12,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
 from trustnews_ml.preprocessing import clean_text, build_content
 
-
 def load_model():
     """Load the trained model pipeline."""
     artifacts_dir = Path(__file__).parent.parent / 'artifacts'
@@ -117,3 +116,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+

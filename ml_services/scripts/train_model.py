@@ -55,21 +55,6 @@ def train_model(X_train, y_train):
     print('\n' + '=' * 60)
     print('TRAINING MODEL')
     print('=' * 60)
-    
-    # Create pipeline: TF-IDF -> Logistic Regression
-    # TF-IDF parameters:
-    # - max_features=10000: Limit vocabulary to top 10,000 words
-    # - ngram_range=(1, 2): Use unigrams and bigrams
-    # - stop_words='english': Remove common English words
-    # - min_df=5: Ignore words appearing in fewer than 5 documents
-    # - max_df=0.7: Ignore words appearing in more than 70% of documents
-    
-    # Logistic Regression parameters:
-    # - class_weight='balanced': Automatically adjust weights inversely proportional to class frequencies
-    # - max_iter=1000: Maximum iterations for convergence
-    # - random_state=42: Reproducibility
-    # - C=1.0: Regularization strength (smaller = stronger regularization)
-    
     pipeline = Pipeline([
         ('tfidf', TfidfVectorizer(
             max_features=10000,
@@ -86,6 +71,7 @@ def train_model(X_train, y_train):
             n_jobs=-1  # Use all CPU cores
         ))
     ])
+    
     
     print('Training Logistic Regression with class_weight="balanced"...')
     print('This automatically adjusts weights to handle class imbalance.')
@@ -172,6 +158,7 @@ def main():
     print(f'\nFinal Test Accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)')
     print(f'Model saved to: {model_path}')
     print(f'\nNext step: Use the model for inference on new articles')
+
 
 
 if __name__ == '__main__':

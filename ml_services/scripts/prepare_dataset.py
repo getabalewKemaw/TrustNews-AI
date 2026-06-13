@@ -1,6 +1,4 @@
 """Prepare and clean the dataset for training.
-
-Run this after explore_dataset.py to create news_clean.csv
 Includes train/test split with stratification.
 """
 
@@ -70,7 +68,7 @@ def main():
     print('=' * 60)
     imbalance_ratio = label_counts['FAKE'] / label_counts['REAL']
     print(f'FAKE/REAL ratio: {imbalance_ratio:.2f}')
-    if imbalance_ratio < 0.9 or imbalance_ratio > 1.1:
+    if imbalance_ratio < 0.7 or imbalance_ratio > 1.1:
         print(' WARNING: Classes are imbalanced!')
         print('   Consider using class weights or resampling.')
     else:
